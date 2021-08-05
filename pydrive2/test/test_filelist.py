@@ -106,11 +106,6 @@ class GoogleDriveFileListTest(unittest.TestCase):
         self.title = title
         self.file_list = file_list
 
-    def tearDown(self):
-        # Deleting uploaded files.
-        for file1 in self.file_list:
-            pydrive_retry(file1.Delete)
-
     def assertFileInFileList(self, file_object):
         found = False
         for file1 in self.file_list:
