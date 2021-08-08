@@ -264,6 +264,18 @@ class GoogleDriveFile(ApiAttributeMixin, ApiResource):
         if self.get("mimeType") is None:
             self["mimeType"] = mimetypes.guess_type(filename)[0]
 
+    def SetContentBytes(self, content, filename):
+        """Set content of this file from a stream.
+
+    :param content: content of the file after FileStorage.read()
+    :type filename: str.
+    """
+        self.content = io.BytesIO(content)
+        if self.get("title") is None:
+            self["title"] = filename
+        if self.get("mimeType") is None:
+            self["mimeType"] = mimetypes.guess_type(filename)
+
     def GetContentString(
         self, mimetype=None, encoding="utf-8", remove_bom=False
     ):
