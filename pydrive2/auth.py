@@ -613,14 +613,17 @@ class GoogleAuth(ApiAttributeMixin, object):
         except AccessTokenRefreshError as error:
             raise RefreshError("Access token refresh failed: %s" % error)
 
-    def GetAuthUrl(self):
+    def GetAuthUrl(self, state=None):
         """Creates authentication url where user visits to grant access.
+    :param state:   Opaque state string which is passed through the
+                    OAuth2 flow and returned to the client as a query parameter
+                    in the callback.
 
     :returns: str -- Authentication url.
     """
         if self.flow is None:
             self.GetFlow()
-        return self.flow.step1_get_authorize_url()
+        return self.flow.step1_get_authorize_url(state=state)
 
     def Auth(self, code):
         """Authenticate, authorize, and build service.
