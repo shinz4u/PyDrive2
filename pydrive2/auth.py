@@ -368,8 +368,11 @@ class GoogleAuth(ApiAttributeMixin):
             creds_key = self.settings.get("save_credentials_key")
             if creds_key is None:
                 raise InvalidConfigError("Please specify credentials key")
+            print(" The creds dict is", creds_dict, flush=True)
+            print(" The creds keys is", creds_key, flush=True)
 
             result[backend] = DictionaryStorage(creds_dict, creds_key)
+            print(" The backend result is ", result[backend], flush=True)
         elif save_credentials:
             raise InvalidConfigError(
                 "Unknown save_credentials_backend: %s" % backend
@@ -676,9 +679,9 @@ class GoogleAuth(ApiAttributeMixin):
 
     def GetAuthUrl(self, state=None):
         """Creates authentication url where user visits to grant access.
-    :param state:   Opaque state string which is passed through the
-                    OAuth2 flow and returned to the client as a query parameter
-                    in the callback.
+        :param state:   Opaque state string which is passed through the
+                       OAuth2 flow and returned to the client as a query parameter
+                       in the callback.
 
         :returns: str -- Authentication url.
         """
