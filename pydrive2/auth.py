@@ -352,6 +352,7 @@ class GoogleAuth(ApiAttributeMixin):
     def _InitializeStoragesFromSettings(self):
         result = {"file": None, "dictionary": None}
         backend = self.settings.get("save_credentials_backend")
+        print(" The backend inside pydrive package is", backend, flush=True)
         save_credentials = self.settings.get("save_credentials")
         if backend == "file":
             credentials_file = self.settings.get("save_credentials_file")
@@ -435,7 +436,8 @@ class GoogleAuth(ApiAttributeMixin):
                 "Backend `dictionary` is not configured, specify "
                 "credentials dict and key to read in the settings file"
             )
-
+        backend = self.settings.get("save_credentials_backend")
+        print(" The backend inside pydrive package is", backend, flush=True)
         self.credentials = self._default_storage.get()
         print("The credentials inside pydrive package is ", self.credentials, flush=True)
 
