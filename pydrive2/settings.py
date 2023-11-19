@@ -36,7 +36,9 @@ SETTINGS_STRUCT = {
         "type": str,
         "required": False,
         "dependency": [
-            {"value": "file", "attribute": ["save_credentials_file"]}
+            {"value": "file", "attribute": ["save_credentials_file"]},
+            {"value": "dictionary", "attribute": ["save_credentials_dict"]},
+            {"value": "dictionary", "attribute": ["save_credentials_key"]},
         ],
     },
     "client_config": {
@@ -75,6 +77,12 @@ SETTINGS_STRUCT = {
             "client_service_email": {"type": str, "required": False},
             "client_pkcs12_file_path": {"type": str, "required": False},
             "client_json_file_path": {"type": str, "required": False},
+            "client_json_dict": {
+                "type": dict,
+                "required": False,
+                "struct": {},
+            },
+            "client_json": {"type": str, "required": False},
         },
     },
     "oauth_scope": {
@@ -84,6 +92,8 @@ SETTINGS_STRUCT = {
         "default": ["https://www.googleapis.com/auth/drive"],
     },
     "save_credentials_file": {"type": str, "required": False},
+    "save_credentials_dict": {"type": dict, "required": False, "struct": {}},
+    "save_credentials_key": {"type": str, "required": False},
 }
 
 
@@ -98,14 +108,14 @@ class InvalidConfigError(IOError):
 def LoadSettingsFile(filename=SETTINGS_FILE):
     """Loads settings file in yaml format given file name.
 
-  :param filename: path for settings file. 'settings.yaml' by default.
-  :type filename: str.
-  :raises: SettingsError
-  """
+    :param filename: path for settings file. 'settings.yaml' by default.
+    :type filename: str.
+    :raises: SettingsError
+    """
     try:
-        with open(filename, "r") as stream:
+        with open(filename) as stream:
             data = load(stream, Loader=Loader)
-    except (YAMLError, IOError) as e:
+    except (YAMLError, OSError) as e:
         raise SettingsError(e)
     return data
 
@@ -113,22 +123,22 @@ def LoadSettingsFile(filename=SETTINGS_FILE):
 def ValidateSettings(data):
     """Validates if current settings is valid.
 
-  :param data: dictionary containing all settings.
-  :type data: dict.
-  :raises: InvalidConfigError
-  """
+    :param data: dictionary containing all settings.
+    :type data: dict.
+    :raises: InvalidConfigError
+    """
     _ValidateSettingsStruct(data, SETTINGS_STRUCT)
 
 
 def _ValidateSettingsStruct(data, struct):
     """Validates if provided data fits provided structure.
 
-  :param data: dictionary containing settings.
-  :type data: dict.
-  :param struct: dictionary containing structure information of settings.
-  :type struct: dict.
-  :raises: InvalidConfigError
-  """
+    :param data: dictionary containing settings.
+    :type data: dict.
+    :param struct: dictionary containing structure information of settings.
+    :type struct: dict.
+    :raises: InvalidConfigError
+    """
     # Validate required elements of the setting.
     for key in struct:
         if struct[key]["required"]:
@@ -138,14 +148,14 @@ def _ValidateSettingsStruct(data, struct):
 def _ValidateSettingsElement(data, struct, key):
     """Validates if provided element of settings data fits provided structure.
 
-  :param data: dictionary containing settings.
-  :type data: dict.
-  :param struct: dictionary containing structure information of settings.
-  :type struct: dict.
-  :param key: key of the settings element to validate.
-  :type key: str.
-  :raises: InvalidConfigError
-  """
+    :param data: dictionary containing settings.
+    :type data: dict.
+    :param struct: dictionary containing structure information of settings.
+    :type struct: dict.
+    :param key: key of the settings element to validate.
+    :type key: str.
+    :raises: InvalidConfigError
+    """
     # Check if data exists. If not, check if default value exists.
     value = data.get(key)
     data_type = struct[key]["type"]
@@ -157,17 +167,15 @@ def _ValidateSettingsElement(data, struct, key):
         else:
             data[key] = default
     # If data exists, Check type of the data
-    elif type(value) is not data_type:
-        raise InvalidConfigError(
-            "Setting %s should be type %s" % (key, data_type)
-        )
+    elif not isinstance(value, data_type):
+        raise InvalidConfigError(f"Setting {key} should be type {data_type}")
     # If type of this data is dict, check if structure of the data is valid.
     if data_type is dict:
         _ValidateSettingsStruct(data[key], struct[key]["struct"])
     # If type of this data is list, check if all values in the list is valid.
     elif data_type is list:
         for element in data[key]:
-            if type(element) is not struct[key]["struct"]:
+            if not isinstance(element, struct[key]["struct"]):
                 raise InvalidConfigError(
                     "Setting %s should be list of %s"
                     % (key, struct[key]["struct"])

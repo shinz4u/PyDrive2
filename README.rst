@@ -1,6 +1,16 @@
-.. image:: https://travis-ci.com/iterative/pydrive2.svg?branch=master
-  :target: https://travis-ci.com/iterative/pydrive2
-  :alt: Travis
+|CI| |Conda| |PyPI|
+
+.. |CI| image:: https://github.com/iterative/PyDrive2/workflows/Tests/badge.svg?branch=main
+   :target: https://github.com/iterative/PyDrive2/actions
+   :alt: GHA Tests
+
+.. |Conda| image:: https://img.shields.io/conda/v/conda-forge/PyDrive2.svg?label=conda&logo=conda-forge
+   :target: https://anaconda.org/conda-forge/PyDrive2
+   :alt: Conda-forge
+
+.. |PyPI| image:: https://img.shields.io/pypi/v/PyDrive2.svg?label=pip&logo=PyPI&logoColor=white
+   :target: https://pypi.org/project/PyDrive2
+   :alt: PyPI
 
 PyDrive2
 --------
@@ -15,9 +25,10 @@ project.
 Project Info
 ------------
 
-- Homepage: `https://pypi.python.org/pypi/PyDrive2 <https://pypi.python.org/pypi/PyDrive2>`_
-- Documentation: `Official documentation on GitHub pages <https://iterative.github.io/PyDrive2/docs/build/html/index.html>`_
-- GitHub: `https://github.com/iterative/PyDrive2 <https://github.com/iterative/PyDrive2>`_
+- Package: `https://pypi.python.org/pypi/PyDrive2 <https://pypi.python.org/pypi/PyDrive2>`_
+- Documentation: `https://docs.iterative.ai/PyDrive2 <https://docs.iterative.ai/PyDrive2>`_
+- Source: `https://github.com/iterative/PyDrive2 <https://github.com/iterative/PyDrive2>`_
+- Changelog: `https://github.com/iterative/PyDrive2/releases <https://github.com/iterative/PyDrive2/releases>`_
 - `Running tests </pydrive2/test/README.rst>`_
 
 Features of PyDrive2
@@ -28,6 +39,7 @@ Features of PyDrive2
    classes of each resource to make your program more object-oriented.
 -  Helps common operations else than API calls, such as content fetching
    and pagination control.
+-  Provides `fsspec`_ filesystem implementation.
 
 How to install
 --------------
@@ -114,7 +126,34 @@ File listing pagination made easy
         for file1 in file_list:
             print('title: {}, id: {}'.format(file1['title'], file1['id']))
 
+Fsspec filesystem
+-----------------
+
+*PyDrive2* provides easy way to work with your files through `fsspec`_
+compatible `GDriveFileSystem`_.
+
+.. code:: python
+
+    from pydrive2.fs import GDriveFileSystem
+
+    fs = GDriveFileSystem("root", client_id=my_id, client_secret=my_secret)
+
+    for root, dnames, fnames in fs.walk(""):
+        ...
+
+.. _`GDriveFileSystem`: https://docs.iterative.ai/PyDrive2/fsspec/
+
 Concurrent access made easy
 ---------------------------
 
 All API functions made to be thread-safe.
+
+Contributors
+------------
+
+Thanks to all our contributors!
+
+.. image:: https://contrib.rocks/image?repo=iterative/PyDrive2
+   :target: https://github.com/iterative/PyDrive2/graphs/contributors
+
+.. _`fsspec`: https://filesystem-spec.readthedocs.io/en/latest/
