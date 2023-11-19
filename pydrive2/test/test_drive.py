@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import unittest
 
 from pydrive2.auth import GoogleAuth
@@ -11,7 +10,8 @@ from pydrive2.test.test_util import (
 
 
 class GoogleDriveTest(unittest.TestCase):
-    """Tests basic operations on meta-data information of the linked Google Drive account.
+    """Tests basic operations on meta-data information of the linked Google
+    Drive account.
     """
 
     @classmethod

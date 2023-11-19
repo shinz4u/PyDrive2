@@ -172,6 +172,43 @@ one permission at a time by providing the permission's ID.
 
     file1.DeletePermission(permission_id)  # Delete the permission.
 
+Get files by complex queries
+----------------------------
+
+We can get a file by name and by other constraints, usually a filename will be
+unique but we can have two equal names with different extensions, e.g.,
+*123.jpeg and 123.mp3*. So if you expect only one file add more constraints to
+the query, see `Query string examples <query_parameters>`_, as a result we get
+a list of `GoogleDriveFile`_ instances.
+
+.. code-block:: python
+
+    from pydrive2.drive import GoogleDrive
+    # Create GoogleDrive instance with authenticated GoogleAuth instance.
+    drive = GoogleDrive(gauth)
+    filename = 'file_test'
+    # Query
+    query = {'q': f"title = '{filename}' and mimeType='{mimetype}'"}
+    # Get list of files that match against the query
+    files = drive.ListFile(query).GetList()
+
+List revisions
+________________
+
+Revisions can be fetched using the ``GetRevisions()`` function of a
+``GoogleDriveFile``, and can be used like so:
+
+.. code-block:: python
+
+    # Create a new file
+    file1 = drive.CreateFile()
+    # Fetch revisions.
+    revisions = file1.GetRevisions()
+    print(revisions)
+
+Not all files objects have revisions. If GetRevisions is called on a
+file object that does not have revisions, an exception will be raised.
+
 Upload and update file content
 ------------------------------
 
@@ -208,6 +245,55 @@ like so:
 
     content_string = file4.GetContentString(encoding='ISO-8859-1')
 
+Upload data as bytes in memory buffer
+--------------------------------------
+
+Data can be kept as bytes in an in-memory buffer when we use the ``io`` module’s
+Byte IO operations, we can upload files that reside in memory, for
+example we have a base64 image, we can decode the string and upload it to drive
+without the need to save as a file and use `SetContentFile(filename)`_
+
+.. code-block:: python
+
+    import io
+    from pydrive2.drive import GoogleDrive
+
+    # Create GoogleDrive instance with authenticated GoogleAuth instance.
+    drive = GoogleDrive(gauth)
+    # Define file name and type
+    metadata = {
+        'title': 'image_test',
+        'mimeType': 'image/jpeg'
+    }
+    # Create file
+    file = drive.CreateFile(metadata=metadata)
+    # Buffered I/O implementation using an in-memory bytes buffer.
+    image_file = io.BytesIO(image_bytes)
+    # Set the content of the file
+    file.content = image_file
+    # Upload the file to google drive
+    file.Upload()
+
+Upload file to a specific folder
+--------------------------------
+
+In order to upload a file into a specific drive folder we need to pass the
+``id`` of the folder in the metadata ``param`` from `CreateFile()`_.
+Save the image from the previous example into a specific folder``:``
+
+.. code-block:: python
+
+    metadata = {
+        'parents': [
+            {"id": id_drive_folder}
+        ],
+        'title': 'image_test',
+        'mimeType': 'image/jpeg'
+    }
+    # Create file
+    file = drive.CreateFile(metadata=metadata)
+    file.Upload()
+
 Download file content
 ---------------------
 
@@ -239,15 +325,25 @@ is downloaded. Just set the `remove_bom` parameter in `GetContentString()` or
 `GetContentFile()` - see `examples/strip_bom_example.py` in the GitHub
 repository for an example.
 
+Abusive files
+-------------
 
-.. _`GoogleDriveFile`: ./pydrive2.html#pydrive2.files.GoogleDriveFile
-.. _`Upload()`: ./pydrive2.html#pydrive2.files.GoogleDriveFile.Upload
-.. _`GoogleAuth`: ./pydrive2.html#pydrive2.auth.GoogleAuth
-.. _`CreateFile()`: ./pydrive2.html#pydrive2.drive.GoogleDrive.CreateFile
+Files identified as `abusive`_ (malware, etc.) are only downloadable by the owner.
+If you see a
+'This file has been identified as malware or spam and cannot be downloaded'
+error, set 'acknowledge_abuse=True' parameter in `GetContentFile()`. By using
+it you indicate that you acknowledge the risks of downloading potential malware.
+
+.. _`GoogleDriveFile`: /PyDrive2/pydrive2/#pydrive2.files.GoogleDriveFile
+.. _`Upload()`: /PyDrive2/pydrive2/#pydrive2.files.GoogleDriveFile.Upload
+.. _`GoogleAuth`: /PyDrive2/pydrive2/#pydrive2.auth.GoogleAuth
+.. _`CreateFile()`: /PyDrive2/pydrive2/#pydrive2.drive.GoogleDrive.CreateFile
 .. _`Files resource`: https://developers.google.com/drive/v2/reference/files#resource-representations
-.. _`SetContentFile(filename)`: ./pydrive2.html#pydrive2.files.GoogleDriveFile.SetContentFile
-.. _`SetContentString(content)`: ./pydrive2.html#pydrive2.files.GoogleDriveFile.SetContentString
-.. _`GetContentFile(filename)`: ./pydrive2.html#pydrive2.files.GoogleDriveFile.GetContentFile
-.. _`GetContentString()`: ./pydrive2.html#pydrive2.files.GoogleDriveFile.GetContentString
+.. _`SetContentFile(filename)`: /PyDrive2/pydrive2/#pydrive2.files.GoogleDriveFile.SetContentFile
+.. _`SetContentString(content)`: /PyDrive2/pydrive2/#pydrive2.files.GoogleDriveFile.SetContentString
+.. _`GetContentFile(filename)`: /PyDrive2/pydrive2/#pydrive2.files.GoogleDriveFile.GetContentFile
+.. _`GetContentString()`: ./PyDrive2/pydrive2/#pydrive2.files.GoogleDriveFile.GetContentString
 .. _`official documentation`: https://developers.google.com/drive/v2/reference/files#resource-representations
 .. _`known`: https://productforums.google.com/forum/#!topic/docs/BJLimQDGtjQ
+.. _`abusive`: https://support.google.com/docs/answer/148505
+.. _`query_parameters`: https://developers.google.com/drive/api/guides/search-files#examples
