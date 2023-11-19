@@ -394,13 +394,20 @@ retrieving authentication code from command-line.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pydrive2.auth.GoogleAuth.GetAuthUrl">
-<span class="sig-name descname"><span class="pre">GetAuthUrl</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pydrive2.auth.GoogleAuth.GetAuthUrl" title="Permalink to this definition">#</a></dt>
-<dd><p>Creates authentication url where user visits to grant access.</p>
+<span class="sig-name descname"><span class="pre">GetAuthUrl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pydrive2.auth.GoogleAuth.GetAuthUrl" title="Permalink to this definition">#</a></dt>
+<dd><p>Creates authentication url where user visits to grant access.
+:param state:   Opaque state string which is passed through the</p>
+<blockquote>
+<div><blockquote>
+<div><p>OAuth2 flow and returned to the client as a query parameter
+in the callback.</p>
+</div></blockquote>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str – Authentication url.</p>
 </dd>
 </dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py method">
@@ -952,6 +959,17 @@ for details.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pydrive2.files.GoogleDriveFile.SetContentBytes">
+<span class="sig-name descname"><span class="pre">SetContentBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pydrive2.files.GoogleDriveFile.SetContentBytes" title="Permalink to this definition">#</a></dt>
+<dd><p>Set content of this file from a stream.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>content</strong> – content of the file after FileStorage.read()</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pydrive2.files.GoogleDriveFile.SetContentFile">
 <span class="sig-name descname"><span class="pre">SetContentFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pydrive2.files.GoogleDriveFile.SetContentFile" title="Permalink to this definition">#</a></dt>
 <dd><p>Set content of this file from a file.</p>
@@ -1295,6 +1313,7 @@ set (means that we are uploading this file for the first time).</p>
 <li><a class="reference internal" href="#pydrive2.files.GoogleDriveFile.GetPermissions"><code class="docutils literal notranslate"><span class="pre">GoogleDriveFile.GetPermissions()</span></code></a></li>
 <li><a class="reference internal" href="#pydrive2.files.GoogleDriveFile.GetRevisions"><code class="docutils literal notranslate"><span class="pre">GoogleDriveFile.GetRevisions()</span></code></a></li>
 <li><a class="reference internal" href="#pydrive2.files.GoogleDriveFile.InsertPermission"><code class="docutils literal notranslate"><span class="pre">GoogleDriveFile.InsertPermission()</span></code></a></li>
+<li><a class="reference internal" href="#pydrive2.files.GoogleDriveFile.SetContentBytes"><code class="docutils literal notranslate"><span class="pre">GoogleDriveFile.SetContentBytes()</span></code></a></li>
 <li><a class="reference internal" href="#pydrive2.files.GoogleDriveFile.SetContentFile"><code class="docutils literal notranslate"><span class="pre">GoogleDriveFile.SetContentFile()</span></code></a></li>
 <li><a class="reference internal" href="#pydrive2.files.GoogleDriveFile.SetContentString"><code class="docutils literal notranslate"><span class="pre">GoogleDriveFile.SetContentString()</span></code></a></li>
 <li><a class="reference internal" href="#pydrive2.files.GoogleDriveFile.Trash"><code class="docutils literal notranslate"><span class="pre">GoogleDriveFile.Trash()</span></code></a></li>
