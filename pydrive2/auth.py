@@ -368,11 +368,11 @@ class GoogleAuth(ApiAttributeMixin):
             creds_key = self.settings.get("save_credentials_key")
             if creds_key is None:
                 raise InvalidConfigError("Please specify credentials key")
-            print(" The creds dict is", creds_dict, flush=True)
-            print(" The creds keys is", creds_key, flush=True)
+            print(" The creds dict inside pydrive package is", creds_dict, flush=True)
+            print(" The creds keys inside pydrive package is", creds_key, flush=True)
 
             result[backend] = DictionaryStorage(creds_dict, creds_key)
-            print(" The backend result is ", result[backend], flush=True)
+            print(" The backend result inside pydrive package is ", result[backend], flush=True)
         elif save_credentials:
             raise InvalidConfigError(
                 "Unknown save_credentials_backend: %s" % backend
@@ -429,6 +429,7 @@ class GoogleAuth(ApiAttributeMixin):
 
     def _LoadCredentialsDictionary(self):
         self._default_storage = self._storages["dictionary"]
+        print("The default storage inside pydrive package is ", self._default_storage, flush=True)
         if self._default_storage is None:
             raise InvalidConfigError(
                 "Backend `dictionary` is not configured, specify "
@@ -436,6 +437,7 @@ class GoogleAuth(ApiAttributeMixin):
             )
 
         self.credentials = self._default_storage.get()
+        print("The credentials inside pydrive package is ", self.credentials, flush=True)
 
         if self.credentials:
             self.credentials.set_store(self._default_storage)
